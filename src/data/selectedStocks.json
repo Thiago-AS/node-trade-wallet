@@ -9,9 +9,6 @@
         "symbol": "SHIP"
     },
     {
-        "symbol": "OAS"
-    },
-    {
         "symbol": "F"
     },
     {
@@ -21,16 +18,7 @@
         "symbol": "GE"
     },
     {
-        "symbol": "VAL"
-    },
-    {
-        "symbol": "UAL"
-    },
-    {
         "symbol": "CPE"
-    },
-    {
-        "symbol": "DAL"
     },
     {
         "symbol": "OXY"
@@ -58,9 +46,6 @@
     },
     {
         "symbol": "JPM"
-    },
-    {
-        "symbol": "ABEV"
     },
     {
         "symbol": "T"
