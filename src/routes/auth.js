@@ -2,12 +2,14 @@ const router = require("express").Router();
 const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const { generateToken, validateToken } = require("../utils/auth");
+const walletModel = require("../models/wallet");
 
 router.post("/register", async (req, res) => {
   try {
     const user = await userModel.create(req.body);
+    const wallet = await walletModel.create({ userId: user._id });
     const token = generateToken(user.id);
-    return res.status(200).json({ user, token });
+    return res.status(200).json({ user, token, wallet });
   } catch (err) {
     if (err.name === "UniqueError")
       return res.status(400).json({ error: "User already exists" });
@@ -34,8 +36,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/test",validateToken, (req, res) => {
-    res.json({ok: `funfou ${req.userId}`})
-})
+router.get("/test", validateToken, (req, res) => {
+  res.json({ ok: `funfou ${req.userId}` });
+});
 
-module.exports = app => app.use("/auth", router);
+module.exports = (app) => app.use("/auth", router);
