@@ -54,6 +54,10 @@ const StockSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
+    },
+    value : {
+        type: Object,
+        default: null
     }
 });
 
