@@ -1,39 +1,38 @@
 const mongoose = require("../database");
 
-const WalletSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
-  stocks: [
-    {
-      stockId: {
-        type: String,
-      },
-      amount: {
-        type: Number,
-      },
+const WalletSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
+    stocks: {
+      type: Object,
+      default: {},
+    },
+    history: [
+      {
+        ticker: String,
+        amount: Number,
+        price: Number,
+        date: Date,
+      },
+    ],
+    credit: {
+      type: Number,
+      default: 0,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-WalletSchema.pre("save", async function (next) {
-  if (await Wallet.exists({ userId: this.userId })) {
-    const err = new Error("Wallet already exists");
-    err.name = "UniqueError";
-    return next(err);
-  } else {
-    return next();
-  }
-});
+  { minimize: false }
+);
 
 const Wallet = mongoose.model("Wallet", WalletSchema);
 
