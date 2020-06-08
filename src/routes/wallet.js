@@ -36,12 +36,23 @@ router.post("/operation", async (req, res) => {
       date: Date.now(),
       price,
       operationType,
-      stockId
+      stockId,
     });
     wallet.updatedAt = Date.now();
     console.log(wallet);
     await wallet.save();
     return res.status(200).send(wallet);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({});
+  }
+});
+
+router.get("/history", async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const history = await walletModel.findOne({ userId }, { history: 1 });
+    return res.status(200).send(history);
   } catch (err) {
     console.log(err);
     return res.status(400).send({});
