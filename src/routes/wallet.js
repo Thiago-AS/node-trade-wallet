@@ -15,26 +15,32 @@ router.post("/operation", async (req, res) => {
       name: 1,
     });
     if (wallet.stocks[stockId]) {
-      wallet.stocks[stockId].averagePrice =
-        operationType === "buy"
-          ? (wallet.stocks[stockId].averagePrice *
-              wallet.stocks[stockId].amount +
-              price * amount) /
-            (wallet.stocks[stockId].amount + amount)
-          : (wallet.stocks[stockId].averagePrice *
-              wallet.stocks[stockId].amount -
-              price * amount) /
-            (wallet.stocks[stockId].amount - amount);
-
       wallet.stocks[stockId].amount =
         operationType === "buy"
           ? wallet.stocks[stockId].amount + amount
           : wallet.stocks[stockId].amount - amount;
+
+      if (wallet.stocks[stockId].amount > 0) {
+        wallet.stocks[stockId].averagePrice =
+          operationType === "buy"
+            ? (wallet.stocks[stockId].averagePrice *
+                wallet.stocks[stockId].amount +
+                price * amount) /
+              (wallet.stocks[stockId].amount + amount)
+            : (wallet.stocks[stockId].averagePrice *
+                wallet.stocks[stockId].amount -
+                price * amount) /
+              (wallet.stocks[stockId].amount - amount);
+      } else {
+        wallet.stocks[stockId] = undefined;
+        delete wallet.stocks[stockId];
+      }
     } else {
       wallet.stocks[stockId] = {
         amount,
         ticker,
         averagePrice: price,
+        name,
       };
     }
     wallet.markModified("stocks");
@@ -72,6 +78,24 @@ router.get("/", async (req, res) => {
   try {
     const wallet = await walletModel.findOne({ userId });
     return res.status(200).send(wallet);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({});
+  }
+});
+
+router.get("/stocks", async (req, res) => {
+  const { userId } = req;
+  try {
+    const wallet = await walletModel.findOne({ userId });
+    const stocksIds = Object.keys(wallet.stocks);
+    const stocks = await stockModel.find().where("_id").in(stocksIds).exec();
+
+    const stocksInfo = stocks.map((stock) => {
+      const stockInfo = { ...stock.toObject(), ...wallet.stocks[stock._id] };
+      return stockInfo;
+    });
+    return res.status(200).send(stocksInfo);
   } catch (err) {
     console.log(err);
     return res.status(400).send({});
