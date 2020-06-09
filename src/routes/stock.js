@@ -4,7 +4,9 @@ const stockModel = require("../models/stock");
 router.get("/", async (req, res) => {
   const { id } = req.query;
   try {
-    const stock = await stockModel.findById(id);
+    const stock = id
+      ? await stockModel.findById(id)
+      : await stockModel.find({});
     return res.status(200).send(stock);
   } catch (err) {
     console.log(err);
