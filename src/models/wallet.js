@@ -18,6 +18,7 @@ const WalletSchema = new mongoose.Schema(
         date: Date,
         operationType: String,
         stockId: String,
+        name: String,
       },
     ],
     credit: {
