@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
-mongoURL = process.env.DB_URL || "mongodb://localhost/trade-wallet";
+mongoURL = process.env.MONGODB_URI || "mongodb://localhost/trade-wallet";
 mongoose.connect(
   mongoURL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
   },
-  err => {
+  (err) => {
     if (err) console.log(`[ERROR] ${err}`);
     else console.log("[INFO] Mongo connected successfuly");
   }
